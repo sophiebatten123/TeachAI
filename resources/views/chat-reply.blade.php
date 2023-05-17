@@ -1,21 +1,11 @@
-<!-- chat-reply.blade.php -->
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Chat Reply</title>
-    <style>
-        /* Style for the reply */
-        .reply {
-            background-color: #f2f2f2;
-            padding: 10px;
-            border-radius: 4px;
-        }
-    </style>
-</head>
-<body>
-    <div class="reply">
-        {{ $reply }}
-    </div>
-</body>
-</html>
+@extends('layouts.app')
+@section('content')
+<div class="m-4 p-4">
+    <h2 class="font-bold underline mb-2"> {{ $yearSelections }} {{ $subjectSelections }} Worksheet</h2>
+    <ol>
+        @foreach ($questions as $question)
+            <li>{{ $question }}</li>
+        @endforeach
+    </ol>
+</div>
+@endsection

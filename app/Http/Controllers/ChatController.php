@@ -13,8 +13,9 @@ class ChatController extends Controller
     
         $yearSelections = implode(', ', $request->input('year'));
         $subjectSelections = implode(', ', $request->input('subject'));
+        $questionSelections = implode(', ', $request->input('questions'));
     
-        $message = "Get me 5 year questions for $subjectSelections in $yearSelections.";
+        $message = "Can you write me $questionSelections questions aimed at $yearSelections pupils on $subjectSelections";
     
         $response = Http::withOptions([
             'verify' => $certificatePath,
@@ -28,10 +29,19 @@ class ChatController extends Controller
                 ['role' => 'user', 'content' => $message],
             ],
         ]);
-    
+
         $reply = $response->json('choices.0.message.content');
+
+        $pattern = '/\d+\.\s(.+)/';
+        preg_match_all($pattern, $reply, $matches);
+        $questions = $matches[1] ?? [];
     
-        return view('chat-reply', ['reply' => $reply]);
+        return view('chat-reply', [
+            'questions' => $questions,
+            'yearSelections' => $yearSelections,
+            'subjectSelections' => $subjectSelections,
+            'questionSelections' => $questionSelections,
+        ]);
     }
 }
 

@@ -7,6 +7,9 @@
   @vite('resources/css/app.css')
 </head>
 <body>
+    <div class="bg-blue-600 p-4">
+        <h1 class="font-bold text-white text-lg">TeachAI</h1>
+    </div>
     @yield('content')
 </body>
 </html>
