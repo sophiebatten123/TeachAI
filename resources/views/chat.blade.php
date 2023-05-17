@@ -1,6 +1,8 @@
-<form action="/chat" method="POST" class="max-w-sm mx-auto">
+@extends('layouts.app')
+@section('content')
+<form action="/chat" method="POST">
     @csrf
-    <div class="mb-4">
+    <div class="mb-4 bg-blue-600">
         <label class="form-label" for="year">Year:</label>
         <select name="year[]" multiple class="form-select">
             <option value="Year 7">Year 7</option>
@@ -20,5 +22,6 @@
     </div>
     <button type="submit" class="btn btn-primary">Send</button>
 </form>
+@endsection
 
 
