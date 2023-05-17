@@ -1,33 +1,24 @@
-<style>
-    /* Style for the form */
-    form {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    input[type="text"] {
-        padding: 10px;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        margin-right: 10px;
-    }
-
-    button[type="submit"] {
-        padding: 10px 15px;
-        background-color: #007bff;
-        color: #fff;
-        font-size: 16px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-</style>
-
-<form action="/chat" method="POST">
-    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-    <input type="text" name="message" placeholder="Enter your message">
-    <button type="submit">Send</button>
+<form action="/chat" method="POST" class="max-w-sm mx-auto">
+    @csrf
+    <div class="mb-4">
+        <label class="form-label" for="year">Year:</label>
+        <select name="year[]" multiple class="form-select">
+            <option value="Year 7">Year 7</option>
+            <option value="Year 8">Year 8</option>
+            <option value="Year 9">Year 9</option>
+            <option value="Year 10">Year 10</option>
+            <option value="Year 11">Year 11</option>
+        </select>
+    </div>
+    <div class="mb-4">
+        <label class="form-label" for="subject">Subject:</label>
+        <select name="subject[]" multiple class="form-select">
+            <option value="Math">Math</option>
+            <option value="Science">Science</option>
+            <!-- Add more options for different subjects -->
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Send</button>
 </form>
+
 

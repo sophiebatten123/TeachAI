@@ -10,7 +10,12 @@ class ChatController extends Controller
     public function sendMessage(Request $request)
     {
         $certificatePath = base_path('certificates/cacert.pem');
-
+    
+        $yearSelections = implode(', ', $request->input('year'));
+        $subjectSelections = implode(', ', $request->input('subject'));
+    
+        $message = "Get me 5 year questions for $subjectSelections in $yearSelections.";
+    
         $response = Http::withOptions([
             'verify' => $certificatePath,
         ])->withHeaders([
@@ -20,12 +25,12 @@ class ChatController extends Controller
             'model' => 'gpt-3.5-turbo',
             'messages' => [
                 ['role' => 'system', 'content' => 'You are a Laravel user.'],
-                ['role' => 'user', 'content' => $request->input('message')],
+                ['role' => 'user', 'content' => $message],
             ],
         ]);
-
+    
         $reply = $response->json('choices.0.message.content');
-
+    
         return view('chat-reply', ['reply' => $reply]);
     }
 }
