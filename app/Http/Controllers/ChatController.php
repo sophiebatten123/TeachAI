@@ -14,8 +14,25 @@ class ChatController extends Controller
         $yearSelections = implode(', ', $request->input('year'));
         $subjectSelections = implode(', ', $request->input('subject'));
         $questionSelections = implode(', ', $request->input('questions'));
+        $questionTypes = $request->input('questionType');
+        $questionTypeCount = count($questionTypes);
+
+        if (!empty($questionTypes)) {
+            $questionTypesString = implode(', ', $questionTypes);
+        } else {
+            $questionTypesString = "";
+        }
     
-        $message = "Can you write me $questionSelections questions aimed at $yearSelections pupils on $subjectSelections";
+        if ($questionTypeCount > 1) {
+            $messages = [];
+            foreach ($questionTypes as $index => $questionType) {
+                $message = "Can you write me $questionSelections $questionType aimed at $yearSelections pupils on $subjectSelections";
+                $messages[] = $message;
+            }
+            $message = implode(' and ', $messages);
+        } else {
+            $message = "Can you write me $questionSelections $questionTypes[0] aimed at $yearSelections pupils on $subjectSelections";
+        }
     
         $response = Http::withOptions([
             'verify' => $certificatePath,
@@ -41,6 +58,7 @@ class ChatController extends Controller
             'yearSelections' => $yearSelections,
             'subjectSelections' => $subjectSelections,
             'questionSelections' => $questionSelections,
+            'message' => $message
         ]);
     }
 }
