@@ -35,5 +35,5 @@ Route::get('/register', function () {
 
 Route::post('/logout', function () {
     Auth::logout();
-    return redirect('/login');
+    return redirect('/');
 })->name('logout');
