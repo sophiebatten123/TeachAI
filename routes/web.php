@@ -23,6 +23,8 @@ Route::view('/chat-reply', 'chat-reply')->name('chat.reply');
 
 Route::post('/chat', [ChatController::class, 'sendMessage']);
 
+// Login, register and logout features
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
@@ -31,11 +33,7 @@ Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
 
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/login');
+})->name('logout');
