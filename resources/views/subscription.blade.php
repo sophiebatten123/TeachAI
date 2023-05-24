@@ -1,42 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <section>
-        <div class="container py-5">
-            <h1>Subscription</h1>
-            <h2>You will be charged ${{ number_format($plan->price, 2) }} for {{ $plan->name }} Plan</h2>
-        </div>
-        <div>
-        <form id="payment-form" action="{{ route('subscription.create') }}" method="POST">
+<div class="container py-5 bg-blue-600 mt-5">
+            <div class="m-auto w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+                <div class="text-2xl font-extrabold mb-4">
+                    We are excited for you to join!
+                </div>
+                <hr/>
+                <div class="my-4 text-md font-medium text-gray-500 dark:text-gray-400">
+                    £{{ number_format($plan->price, 2) }}/month for the {{ $plan->name }}
+                </div>
+                <div class="card-body">
+                    <form id="payment-form" action="{{ route('subscription.create') }}" method="POST">
                         @csrf
                         <input type="hidden" name="plan" id="plan" value="{{ $plan->id }}">
-   
                         <div class="row">
                             <div class="col-xl-4 col-lg-4">
                                 <div class="form-group">
-                                    <label for="">Name</label>
-                                    <input type="text" name="name" id="card-holder-name" class="form-control" value="" placeholder="Name on the card">
+                                    <input type="text" name="name" id="card-holder-name" class="w-full form-control border bg-gray-200 py-1 px-4" value="" placeholder="Name on card">
                                 </div>
                             </div>
                         </div>
-   
-                        <div class="row">
+                        <div class="row mt-2">
                             <div class="col-xl-4 col-lg-4">
                                 <div class="form-group">
-                                    <label for="">Card details</label>
-                                    <div id="card-element"></div>
+                                    <div id="card-element" class="form-control border bg-gray-200 py-2 px-4"></div>
                                 </div>
                             </div>
-                            <div class="col-xl-12 col-lg-12">
+                            <div class="col-xl-12 col-lg-12 mt-4">
                             <hr>
-                                <button type="submit" class="btn btn-primary" id="card-button" data-secret="{{ $intent->client_secret }}">Purchase</button>
+                                <button type="submit" id="card-button" data-secret="{{ $intent->client_secret }}" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">Purchase</button>
                             </div>
                         </div>
    
                     </form>
-        </div>
-    </section>
+   
+                </div>
+            </div>
 </div>
 
 <script src="https://js.stripe.com/v3/"></script>
