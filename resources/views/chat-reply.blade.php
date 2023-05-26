@@ -8,5 +8,8 @@
             <li>{{ $question }}</li>
         @endforeach
     </ol>
+    <div>
+        <a href="{{ route('presentation.download', ['aiResponse' => $aiResponse]) }}" class="border bg-blue-200 p-2">Download as PowerPoint</a>
+    </div>
 </div>
 @endsection

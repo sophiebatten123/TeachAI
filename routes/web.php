@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PlanController;
+use App\Http\Controllers\PresentationController;
+
+Route::get('/download-presentation', [PresentationController::class, 'download'])->name('presentation.download');
 
 Route::middleware("auth")->group(function () {
     Route::get('plans', [PlanController::class, 'index']);

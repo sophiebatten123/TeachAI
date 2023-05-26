@@ -52,13 +52,16 @@ class ChatController extends Controller
         $pattern = '/\d+\.\s(.+)/';
         preg_match_all($pattern, $reply, $matches);
         $questions = $matches[1] ?? [];
+
+        $reply = $response->json('choices.0.message.content');
     
         return view('chat-reply', [
             'questions' => $questions,
             'yearSelections' => $yearSelections,
             'subjectSelections' => $subjectSelections,
             'questionSelections' => $questionSelections,
-            'message' => $message
+            'message' => $message,
+            'aiResponse' => $reply
         ]);
     }
 }
