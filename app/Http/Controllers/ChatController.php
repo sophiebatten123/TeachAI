@@ -45,24 +45,31 @@ class ChatController extends Controller
         $lessons = explode('Lesson Plan', $reply);
         unset($lessons[0]); // Remove the first empty element
     
-        // Save the individual lessons to the database
+        $savedLessons = [];
         foreach ($lessons as $lesson) {
             // Clean up the lesson content (remove HTML tags, trim whitespace, etc.)
             $lessonContent = strip_tags($lesson);
             $lessonContent = trim($lessonContent);
     
             // Save the lesson to the database
-            Lesson::create([
+            $savedLesson = Lesson::create([
                 'user_id' => Auth::user()->id,
                 'lesson_content' => $lessonContent,
             ]);
+    
+            // Add the saved lesson to the array
+            $savedLessons[] = $savedLesson;
         }
     
+        // Redirect to the viewLessons method with the saved lessons
+        return $this->viewLessons($savedLessons);
+    }
+    public function viewLessons()
+    {
+        $lessons = Lesson::all();
+
         return view('chat-reply', [
-            'yearSelections' => $yearSelections,
-            'subjectSelections' => $subjectSelections,
-            'message' => $message,
-            'aiResponse' => $reply
+            'lessons' => $lessons,
         ]);
     }
 }
