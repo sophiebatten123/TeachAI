@@ -4,11 +4,7 @@
     <p> Your question was: {{ $message}} <p>
     <h2 class="font-bold underline mb-2"> {{ $yearSelections }} {{ $subjectSelections }} Worksheet</h2>
     <div class="bg-red-200 h-auto mb-4">
-        <ol>
-            @foreach ($questions as $question)
-                <li>{{ $question }}</li>
-            @endforeach
-        </ol>
+        {!! $aiResponse !!}
     </div>
     <div class="flex">
         <div>
