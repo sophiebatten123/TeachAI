@@ -22,15 +22,14 @@ class ChatController extends Controller
 
         $message = "Create $numberOfLessons lesson plans on $subjectSelections for $yearSelections students all of which follow on
             from the previous days learning and contain recap activities. You must also provide at least 10
-             questions for worksheets, an exit ticket and any additional printable resources text. I will need
-              these so that I can print these before hand.";
+             questions for worksheets and an exit ticket. Provide the lesson plan with the following objective, recap activity, teaching, practice, exit ticket, worksheet.";
     
         $response = Http::withOptions([
                 'verify' => $certificatePath,
             ])->withHeaders([
                 'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
                 'Content-Type' => 'application/json',
-            ])->timeout(60) // Set the timeout value to 60 seconds
+            ])->timeout(100) // Set the timeout value to 60 seconds
             ->post('https://api.openai.com/v1/chat/completions', [
                 'model' => 'gpt-3.5-turbo',
                 'messages' => [
@@ -49,12 +48,35 @@ class ChatController extends Controller
         foreach ($lessons as $lesson) {
             // Clean up the lesson content (remove HTML tags, trim whitespace, etc.)
             $lessonContent = strip_tags($lesson);
-            $lessonContent = trim($lessonContent);
+            $lessonContent = trim($lessonContent);  
+
+            $title = $this->extractSection($lessonContent, '/^\d+:\s*(.+)/');
+            $objective = $this->extractSection($lessonContent, '/Objective:(.*?)Recap Activity:/s');
+            $recapActivity = $this->extractSection($lessonContent, '/Recap Activity:(.*?)Teaching:/s');
+            $teaching = $this->extractSection($lessonContent, '/Teaching:(.*?)Practice:/s');
+            $practice = $this->extractSection($lessonContent, '/Practice:(.*?)Exit Ticket:/s');
+            $exitTicket = $this->extractSection($lessonContent, '/Exit Ticket:(.*?)Worksheet:/s');
+            $worksheet = $this->extractSection($lessonContent, '/Worksheet:(.*)/s');            
+            
+            Log::info('Title: ' . $title);
+            Log::info('Objective: ' . $objective);
+            Log::info('Recap Activity: ' . $recapActivity);
+            Log::info('Teaching: ' . $teaching);
+            Log::info('Practice: ' . $practice);
+            Log::info('Exit Ticket: ' . $exitTicket);
+            Log::info('Worksheet: ' . $worksheet);
     
             // Save the lesson to the database
             $savedLesson = Lesson::create([
                 'user_id' => Auth::user()->id,
                 'lesson_content' => $lessonContent,
+                'title' => $title,
+                'objective' => $objective,
+                'recap_activity' => $recapActivity,
+                'teaching' => $teaching,
+                'practice' => $practice,
+                'exit_ticket' => $exitTicket,
+                'worksheet' => $worksheet,
             ]);
     
             // Add the saved lesson to the array
@@ -64,6 +86,11 @@ class ChatController extends Controller
         // Redirect to the viewLessons method with the saved lessons
         return $this->viewLessons($savedLessons);
     }
+    public function extractSection($lessonContent, $pattern)
+    {
+        preg_match($pattern, $lessonContent, $matches);
+        return isset($matches[1]) ? trim($matches[1]) : null;
+    }       
     public function viewLessons()
     {
         $lessons = Lesson::all();
