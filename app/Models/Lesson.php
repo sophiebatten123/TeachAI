@@ -15,7 +15,8 @@ class Lesson extends Model
             'teaching',
             'practice',
             'exit_ticket',
-            'worksheet',
+            'powerpoint',
+            'worksheet'
         ];
 
     public function user()

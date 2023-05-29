@@ -28,11 +28,12 @@ class ChatController extends Controller
             'teaching' => 'Teaching:',
             'practice' => 'Practice:',
             'exit_ticket' => 'Exit Ticket:',
-            'worksheet' => 'Worksheet:',
+            'powerpoint' => 'Powerpoint',
+            'worksheet' => 'Worksheet:'
         ];
     
         // Construct the message content with subheadings
-        $message = "Create $numberOfLessons lesson plans on $subjectSelections for $yearSelections students. The lesson plan must have the following sections:\n\n . You need to supply 3 recap questions, 10 worksheet questions and a detailed plan for teaching";
+        $message = "Create $numberOfLessons lesson plans on $subjectSelections for $yearSelections students. The lesson plan must have the following sections:\n\n . You need to supply 3 recap questions, 10 worksheet questions, a detailed plan for teaching and powerpoint slides";
         foreach ($subheadings as $section => $subheading) {
             $message .= "\n$subheading";
         }
@@ -86,6 +87,7 @@ class ChatController extends Controller
                 'teaching' => $lessonSections['teaching'],
                 'practice' => $lessonSections['practice'],
                 'exit_ticket' => $lessonSections['exit_ticket'],
+                'powerpoint' => $lessonSections['powerpoint'],
                 'worksheet' => $lessonSections['worksheet'],
             ]);
     
