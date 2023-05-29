@@ -14,7 +14,7 @@
                 <a href="{{ route('presentation.download', ['aiResponse' => $lesson->lesson_content]) }}" class="border bg-blue-200 p-2">Download as PowerPoint</a>
             </div>
             <div class="ml-2">
-                <a href="{{ route('document.download', ['aiResponse' => $lesson->lesson_content]) }}" class="border bg-blue-200 p-2">Download as Worksheet</a>
+                <a href="{{ route('document.download', ['lessonId' => $lesson->id]) }}" class="border bg-blue-200 p-2">Download as Worksheet</a>
             </div>
         </div>
     @php

@@ -8,7 +8,7 @@ use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\DocumentController;
 
 Route::get('/download-presentation', [PresentationController::class, 'download'])->name('presentation.download');
-Route::get('/download-document', [DocumentController::class, 'download'])->name('document.download');
+Route::get('/download-document/{lessonId}', [DocumentController::class, 'download'])->name('document.download');
 
 Route::middleware("auth")->group(function () {
     Route::get('plans', [PlanController::class, 'index']);
