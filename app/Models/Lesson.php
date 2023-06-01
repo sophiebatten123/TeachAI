@@ -15,7 +15,6 @@ class Lesson extends Model
             'teaching',
             'practice',
             'exit_ticket',
-            'powerpoint',
             'worksheet'
         ];
 
@@ -23,5 +22,8 @@ class Lesson extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+    public function powerpoint()
+    {
+        return $this->hasOne(Powerpoint::class);
+    }
 }

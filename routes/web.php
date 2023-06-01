@@ -16,6 +16,8 @@ Route::middleware("auth")->group(function () {
     Route::post('subscription', [PlanController::class, 'subscription'])->name("subscription.create");
 });
 
+Route::post('/create-powerpoint', [ChatController::class, 'createPowerPoint'])->name('create-powerpoint');
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
