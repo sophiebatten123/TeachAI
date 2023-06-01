@@ -16,6 +16,12 @@
             <input type="hidden" name="lesson_content" value="{{ $lesson->lesson_content }}">
             <button type="submit" class="border bg-blue-200 p-2">Create PowerPoint Slides</button>
         </form>
+        <form action="{{ route('create-worksheet') }}" method="POST" id="form-create-worksheet">
+            @csrf
+            <input type="hidden" name="lesson_id" value="{{ $lesson->id }}">
+            <input type="hidden" name="lesson_content" value="{{ $lesson->lesson_content }}">
+            <button type="submit" class="border bg-blue-200 p-2">Create Worksheet</button>
+        </form>
             <div class="ml-2">
                 <a href="{{ route('document.download', ['lessonId' => $lesson->id]) }}" class="border bg-blue-200 p-2">Download as Lesson Plan</a>
             </div>
@@ -28,6 +34,10 @@
 
 <script>
   document.getElementById('form-create-powerpoint').addEventListener('submit', function(event) {
+    event.preventDefault();
+    this.submit();
+  });
+  document.getElementById('form-create-worksheet').addEventListener('submit', function(event) {
     event.preventDefault();
     this.submit();
   });

@@ -15,6 +15,7 @@ class RemovePowerpointFromLessonsTableMigration extends Migration
     {
         Schema::table('lessons', function (Blueprint $table) {
             $table->dropColumn('powerpoint');
+            $table->dropColumn('worksheet');
         });
     }
 

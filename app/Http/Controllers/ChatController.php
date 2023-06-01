@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Lesson;
 use App\Models\Powerpoint;
+use App\Models\Worksheet;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpPresentation\PhpPresentation;
 use PhpOffice\PhpPresentation\IOFactory;
 use PhpOffice\PhpPresentation\Style\Alignment;
 use PhpOffice\PhpPresentation\Style\Color;
+use PhpOffice\PhpWord\PhpWord;
 
 
 class ChatController extends Controller
@@ -29,12 +31,11 @@ class ChatController extends Controller
             'recap' => 'Recap Activity:',
             'teaching' => 'Teaching:',
             'practice' => 'Practice:',
-            'exit_ticket' => 'Exit Ticket:',
-            'worksheet' => 'Worksheet:'
+            'exit_ticket' => 'Exit Ticket:'
         ];
     
         // Construct the message content with subheadings
-        $message = "Create $numberOfLessons lesson plans on $subjectSelections for $yearSelections students. The lesson plan must have the following sections:\n\n . You need to supply 3 recap questions, 10 worksheet questions and a detailed plan for teaching";
+        $message = "Create $numberOfLessons lesson plans on $subjectSelections for $yearSelections students. The lesson plan must have the following sections:\n\n . Please make the lesson plan detailed and comprehensive.";
         foreach ($subheadings as $section => $subheading) {
             $message .= "\n$subheading";
         }
@@ -58,10 +59,10 @@ class ChatController extends Controller
                 preg_match($regex, $lessonContent, $matches);
                 $lessonSections[$section] = isset($matches[1]) ? trim($matches[1]) : '';
 
-                if ($section === 'worksheet') {
-                    $worksheetRegex = "/$subheading(.*?)(Exit Ticket:|Worksheet:|$)/is";
-                    preg_match($worksheetRegex, $lessonContent, $worksheetMatches);
-                    $lessonSections[$section] = isset($worksheetMatches[1]) ? trim($worksheetMatches[1]) : '';
+                if ($section === 'exit_ticket') {
+                    $exitTicketRegex = "/$subheading(.*?)(Practice:|Exit Ticket:|$)/is";
+                    preg_match($exitTicketRegex, $lessonContent, $exitTicketMatches);
+                    $lessonSections[$section] = isset($exitTicketMatches[1]) ? trim($exitTicketMatches[1]) : '';
                 }
             }
     
@@ -75,7 +76,6 @@ class ChatController extends Controller
                 'teaching' => $lessonSections['teaching'],
                 'practice' => $lessonSections['practice'],
                 'exit_ticket' => $lessonSections['exit_ticket'],
-                'worksheet' => $lessonSections['worksheet'],
             ]);
     
             // Add the saved lesson to the array
@@ -91,10 +91,11 @@ class ChatController extends Controller
         $lessonContent = $request->input('lesson_content');
         
         // Produce PowerPoint slides
-        $powerpoint_message = "Based on this lesson plan: $lessonContent can you provide me the text to include on my teaching PowerPoint slides.";
+        $powerpoint_message = "Based on this lesson plan: $lessonContent can you tell me what I should include on each of my PowerPoint slides.";
         $powerpointResponse = $this->openAIRequest($powerpoint_message);
         $powerpointReply = $powerpointResponse->json('choices.0.message.content');
 
+        // Saves the powerpoint to the database
         Powerpoint::create([
             'lesson_id' => $lessonId,
             'powerpoint_content' => $powerpointReply,
@@ -132,6 +133,44 @@ class ChatController extends Controller
         // Download the presentation
         return response()->download($filePath, 'presentation.pptx');
     }
+    public function createWorksheet(Request $request)
+    {
+        $lessonId = $request->input('lesson_id');
+        $lessonContent = $request->input('lesson_content');
+        
+        // Produce PowerPoint slides
+        $worksheet_message = "Based on this lesson plan: $lessonContent please create questions to include on a worksheet. These questions should test what has been taught in the lesson and be differentiated.";
+        $worksheetResponse = $this->openAIRequest($worksheet_message);
+        $worksheetReply = $worksheetResponse->json('choices.0.message.content');
+
+        // Saves the powerpoint to the database
+        Worksheet::create([
+            'lesson_id' => $lessonId,
+            'worksheet_content' => $worksheetReply,
+        ]);
+
+        // Create a new PhpWord object
+        $phpWord = new PhpWord();
+
+        // Add a section
+        $section = $phpWord->addSection();
+
+        $boldFontStyle = ['bold' => true];
+        $normalFontStyle = ['bold' => false];
+
+        // Add the sections to the section
+        $section->addText('Questions:', $boldFontStyle);
+        $section->addText($worksheetReply, $normalFontStyle);
+
+        // Set the output file path
+        $filePath = public_path('documents/document.docx');
+
+        // Save the Word document
+        $phpWord->save($filePath);
+
+        // Download the Word document
+        return response()->download($filePath, 'document.docx');
+    }
     public function openAIRequest($message)
     {
         $certificatePath = base_path('certificates/cacert.pem');
@@ -152,11 +191,6 @@ class ChatController extends Controller
 
         return $response;
     }   
-    public function extractSection($lessonContent, $pattern)
-    {
-        preg_match($pattern, $lessonContent, $matches);
-        return isset($matches[1]) ? trim($matches[1]) : null;
-    }  
     public function viewLessons()
     {
         $lessons = Lesson::all();

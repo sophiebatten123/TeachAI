@@ -14,8 +14,7 @@ class Lesson extends Model
             'recap_activity',
             'teaching',
             'practice',
-            'exit_ticket',
-            'worksheet'
+            'exit_ticket'
         ];
 
     public function user()

@@ -17,6 +17,7 @@ Route::middleware("auth")->group(function () {
 });
 
 Route::post('/create-powerpoint', [ChatController::class, 'createPowerPoint'])->name('create-powerpoint');
+Route::post('/create-worksheet', [ChatController::class, 'createWorksheet'])->name('create-worksheet');
 
 /*
 |--------------------------------------------------------------------------
