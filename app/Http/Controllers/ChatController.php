@@ -91,7 +91,7 @@ class ChatController extends Controller
         $lessonContent = $request->input('lesson_content');
         
         // Produce PowerPoint slides
-        $powerpoint_message = "Based on this lesson plan: $lessonContent can you tell me what I should include on each of my PowerPoint slides.";
+        $powerpoint_message = "This is my lesson plan: $lessonContent using this please provide me with a break down of what can be including on my teaching slides. Include relevant information such as the title, learning objectives, starter activity and worked examples. Please provide all the texts and material for me to teach the lesson without having to edit the powerpoint";
         $powerpointResponse = $this->openAIRequest($powerpoint_message);
         $powerpointReply = $powerpointResponse->json('choices.0.message.content');
 
